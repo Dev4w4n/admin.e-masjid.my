@@ -2,7 +2,7 @@ syntax = "proto3";
 
 import "google/protobuf/empty.proto";
 
-option go_package = "github.com/Dev4w4n/admin.e-masjid.my/api/proto";
+option go_package = "github.com/Dev4w4n/admin.e-masjid.my/api/pb";
 
 message Tenant {
     int64 id = 1;
