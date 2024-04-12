@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/Dev4w4n/admin.e-masjid.my/api/proto";
+
+message Tenant {
+    int64 id = 1;
+    string db_host = 2;
+    string db_user = 3;
+    string db_password = 4;
+    string db_name = 5;
+    string allowed_origin = 6;
+    string manager_role = 7;
+    string user_role = 8;
+    string keycloak_client_id = 9;
+    string keycloak_server = 10;
+    string keycloak_jwks_url = 11;
+    int64 created_at = 12;
+}
+
+message TenantList {
+    repeated Tenant tenant_list = 1;
+}
+
+message TenantIdRequest {
+    int64 id = 1;
+}
+
+message TenantServiceResponse {
+    bool status = 1;
+}
+
+service Tenants {
+    rpc FindAll(google.protobuf.Empty) returns (TenantList) {}
+    rpc Upsert(Tenant) returns (Tenant) {}
+    rpc Delete(TenantIdRequest) returns (TenantServiceResponse) {}
+}
