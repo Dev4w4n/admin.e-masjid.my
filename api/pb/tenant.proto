@@ -32,8 +32,13 @@ message TenantServiceResponse {
     bool status = 1;
 }
 
+message TenantNamespaceRequest {
+    string name_space = 1;
+}
+
 service Tenants {
     rpc FindAll(google.protobuf.Empty) returns (TenantList) {}
+    rpc FindByNamespace(TenantNamespaceRequest) returns (Tenant) {}
     rpc Upsert(Tenant) returns (Tenant) {}
     rpc Delete(TenantIdRequest) returns (TenantServiceResponse) {}
 }
