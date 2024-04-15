@@ -9,7 +9,7 @@ type Tenant struct {
 	DbName           string `gorm:"column:db_name"`
 	AllowedOrigin    string `gorm:"column:allowed_origin"`
 	ManagerRole      string `gorm:"column:manager_role"`
-	UserRole         string `gorm:"column:userRole"`
+	UserRole         string `gorm:"column:user_role"`
 	KeycloakClientId string `gorm:"column:keycloak_client_id"`
 	KeycloakServer   string `gorm:"column:keycloak_server"`
 	KeycloakJwksUrl  string `gorm:"column:keycloak_jwks_url"`

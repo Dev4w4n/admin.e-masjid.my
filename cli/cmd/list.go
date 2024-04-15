@@ -42,9 +42,9 @@ func displayTenant(list *pb.TenantList) {
 	// Displays the tenant list in a table
 	w := tabwriter.NewWriter(os.Stdout, 10, 10, 2, ' ', tabwriter.TabIndent)
 
-	fmt.Fprintln(w, "TENANT ID\t DB NAME\t DB USER")
+	fmt.Fprintln(w, "TENANT ID\t NAMESPACE\t DB NAME\t DB USER")
 	for _, tenant := range list.TenantList {
-		fmt.Fprintln(w, tenant.Id, "\t", tenant.DbName, "\t", tenant.DbUser)
+		fmt.Fprintln(w, tenant.Id, "\t", tenant.NameSpace, "\t", tenant.DbName, "\t", tenant.DbUser)
 	}
 
 	w.Flush()
