@@ -8,6 +8,7 @@ import (
 type TenantRepository interface {
 	FindAll() ([]model.Tenant, error)
 	FindById(id int64) (model.Tenant, error)
+	FindByNamespace(namespace string) (model.Tenant, error)
 	Upsert(tenant *model.Tenant) (model.Tenant, error)
 	Delete(id int64) error
 }
@@ -34,6 +35,17 @@ func (repo *TenantRepositoryImpl) FindAll() ([]model.Tenant, error) {
 func (repo *TenantRepositoryImpl) FindById(id int64) (model.Tenant, error) {
 	var tenant model.Tenant
 	result := repo.Db.Where("id = ?", id).First(&tenant)
+
+	if result.Error != nil {
+		return model.Tenant{}, result.Error
+	}
+
+	return tenant, nil
+}
+
+func (repo *TenantRepositoryImpl) FindByNamespace(namespace string) (model.Tenant, error) {
+	var tenant model.Tenant
+	result := repo.Db.Where("name_space = ?", namespace).First(&tenant)
 
 	if result.Error != nil {
 		return model.Tenant{}, result.Error
