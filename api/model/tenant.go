@@ -2,6 +2,7 @@ package model
 
 type Tenant struct {
 	Id               int64  `gorm:"column:id;primary_key"`
+	NameSpace        string `gorm:"column:name_space"`
 	DbHost           string `gorm:"column:db_host"`
 	DbUser           string `gorm:"column:db_user"`
 	DbPassword       string `gorm:"column:db_password"`
