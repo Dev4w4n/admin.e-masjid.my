@@ -24,6 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type TenantsClient interface {
 	FindAll(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*TenantList, error)
+	FindByNamespace(ctx context.Context, in *TenantNamespaceRequest, opts ...grpc.CallOption) (*Tenant, error)
 	Upsert(ctx context.Context, in *Tenant, opts ...grpc.CallOption) (*Tenant, error)
 	Delete(ctx context.Context, in *TenantIdRequest, opts ...grpc.CallOption) (*TenantServiceResponse, error)
 }
@@ -39,6 +40,15 @@ func NewTenantsClient(cc grpc.ClientConnInterface) TenantsClient {
 func (c *tenantsClient) FindAll(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*TenantList, error) {
 	out := new(TenantList)
 	err := c.cc.Invoke(ctx, "/Tenants/FindAll", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tenantsClient) FindByNamespace(ctx context.Context, in *TenantNamespaceRequest, opts ...grpc.CallOption) (*Tenant, error) {
+	out := new(Tenant)
+	err := c.cc.Invoke(ctx, "/Tenants/FindByNamespace", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -68,6 +78,7 @@ func (c *tenantsClient) Delete(ctx context.Context, in *TenantIdRequest, opts ..
 // for forward compatibility
 type TenantsServer interface {
 	FindAll(context.Context, *emptypb.Empty) (*TenantList, error)
+	FindByNamespace(context.Context, *TenantNamespaceRequest) (*Tenant, error)
 	Upsert(context.Context, *Tenant) (*Tenant, error)
 	Delete(context.Context, *TenantIdRequest) (*TenantServiceResponse, error)
 	mustEmbedUnimplementedTenantsServer()
@@ -79,6 +90,9 @@ type UnimplementedTenantsServer struct {
 
 func (UnimplementedTenantsServer) FindAll(context.Context, *emptypb.Empty) (*TenantList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FindAll not implemented")
+}
+func (UnimplementedTenantsServer) FindByNamespace(context.Context, *TenantNamespaceRequest) (*Tenant, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FindByNamespace not implemented")
 }
 func (UnimplementedTenantsServer) Upsert(context.Context, *Tenant) (*Tenant, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Upsert not implemented")
@@ -113,6 +127,24 @@ func _Tenants_FindAll_Handler(srv interface{}, ctx context.Context, dec func(int
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(TenantsServer).FindAll(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Tenants_FindByNamespace_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TenantNamespaceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TenantsServer).FindByNamespace(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/Tenants/FindByNamespace",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TenantsServer).FindByNamespace(ctx, req.(*TenantNamespaceRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -163,6 +195,10 @@ var Tenants_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "FindAll",
 			Handler:    _Tenants_FindAll_Handler,
+		},
+		{
+			MethodName: "FindByNamespace",
+			Handler:    _Tenants_FindByNamespace_Handler,
 		},
 		{
 			MethodName: "Upsert",
