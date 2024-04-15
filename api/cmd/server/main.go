@@ -72,6 +72,7 @@ func (s *TenantsServer) FindAll(ctx context.Context, req *emptypb.Empty) (*pb.Te
 		tenantList.TenantList[i] = &pb.Tenant{
 			// Fill in tenant fields
 			Id:               tenant.Id,
+			NameSpace:        tenant.NameSpace,
 			DbHost:           tenant.DbHost,
 			DbUser:           tenant.DbUser,
 			DbPassword:       tenant.DbPassword,
@@ -92,6 +93,8 @@ func (s *TenantsServer) FindAll(ctx context.Context, req *emptypb.Empty) (*pb.Te
 func (s *TenantsServer) Upsert(ctx context.Context, req *pb.Tenant) (*pb.Tenant, error) {
 	// Convert pb.Tenant to model.Tenant
 	mTenant := model.Tenant{
+		// Fill in tenant fields
+		NameSpace:        req.NameSpace,
 		DbHost:           req.DbHost,
 		DbUser:           req.DbUser,
 		DbPassword:       req.DbPassword,
@@ -116,6 +119,7 @@ func (s *TenantsServer) Upsert(ctx context.Context, req *pb.Tenant) (*pb.Tenant,
 	pbTenant := &pb.Tenant{
 		// Fill in tenant fields
 		Id:               _tenant.Id,
+		NameSpace:        _tenant.NameSpace,
 		DbHost:           _tenant.DbHost,
 		DbUser:           _tenant.DbUser,
 		DbPassword:       _tenant.DbPassword,
@@ -148,4 +152,30 @@ func (s *TenantsServer) Delete(ctx context.Context, req *pb.TenantIdRequest) (*p
 	// Use pb.TenantServiceResponse to return status
 	response.Status = true
 	return response, nil
+}
+
+func (s *TenantsServer) FindByNamespace(ctx context.Context, req *pb.TenantNamespaceRequest) (*pb.Tenant, error) {
+	tenant, err := s.tenantRepository.FindByNamespace(req.NameSpace)
+	if err != nil {
+		log.Printf("Error fetching tenant: %v", err)
+		return nil, err
+	}
+
+	pbTenant := &pb.Tenant{
+		Id:               tenant.Id,
+		NameSpace:        tenant.NameSpace,
+		DbHost:           tenant.DbHost,
+		DbUser:           tenant.DbUser,
+		DbPassword:       tenant.DbPassword,
+		DbName:           tenant.DbName,
+		AllowedOrigin:    tenant.AllowedOrigin,
+		ManagerRole:      tenant.ManagerRole,
+		UserRole:         tenant.UserRole,
+		KeycloakClientId: tenant.KeycloakClientId,
+		KeycloakServer:   tenant.KeycloakServer,
+		KeycloakJwksUrl:  tenant.KeycloakJwksUrl,
+		CreatedAt:        tenant.CreatedAt,
+	}
+
+	return pbTenant, nil
 }
