@@ -7,6 +7,8 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
+	"text/tabwriter"
 	"time"
 
 	"github.com/Dev4w4n/admin.e-masjid.my/api/pb"
@@ -68,17 +70,21 @@ func searchTenant(namespace string) (*pb.Tenant, error) {
 
 func displaySingleTenant(tenant *pb.Tenant) {
 	// Displays the single tenant in details
+	w := tabwriter.NewWriter(os.Stdout, 20, 10, 2, ' ', tabwriter.TabIndent)
+
 	fmt.Println("")
-	fmt.Printf("TENANT ID: %d\n", tenant.Id)
-	fmt.Printf("NAMESPACE: %s\n", tenant.NameSpace)
-	fmt.Printf("DB NAME: %s\n", tenant.DbName)
-	fmt.Printf("DB USER: %s\n", tenant.DbUser)
-	fmt.Printf("DB PASSWORD: %s\n", tenant.DbUser)
-	fmt.Printf("ALLOWED ORIGIN: %s\n", tenant.AllowedOrigin)
-	fmt.Printf("MANAGER ROLE: %s\n", tenant.ManagerRole)
-	fmt.Printf("USER ROLE: %s\n", tenant.UserRole)
-	fmt.Printf("KEYCLOAK CLIENT ID: %s\n", tenant.KeycloakClientId)
-	fmt.Printf("KEYCLOAK SERVER: %s\n", tenant.KeycloakServer)
-	fmt.Printf("KEYCLOAK JWKS URL: %s\n", tenant.KeycloakJwksUrl)
-	fmt.Println("")
+	fmt.Println("Tenant Detailed Informations")
+	fmt.Println("----------------------------")
+	fmt.Fprintln(w, "TENANT ID:", "\t", tenant.Id)
+	fmt.Fprintln(w, "NAMESPACE:", "\t", tenant.NameSpace)
+	fmt.Fprintln(w, "DB NAME:", "\t", tenant.DbName)
+	fmt.Fprintln(w, "DB USER:", "\t", tenant.DbUser)
+	fmt.Fprintln(w, "DB PASSWORD:", "\t", tenant.DbUser)
+	fmt.Fprintln(w, "ALLOWED ORIGIN:", "\t", tenant.AllowedOrigin)
+	fmt.Fprintln(w, "MANAGER ROLE:", "\t", tenant.ManagerRole)
+	fmt.Fprintln(w, "USER ROLE:", "\t", tenant.UserRole)
+	fmt.Fprintln(w, "KEYCLOAK CLIENT ID:", "\t", tenant.KeycloakClientId)
+	fmt.Fprintln(w, "KEYCLOAK SERVER:", "\t", tenant.KeycloakServer)
+	fmt.Fprintln(w, "KEYCLOAK JWKS URL:", "\t", tenant.KeycloakJwksUrl)
+	w.Flush()
 }
